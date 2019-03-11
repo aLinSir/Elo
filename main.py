@@ -59,29 +59,29 @@ def deal_transactions(str, data):
     data['duration'] = data['purchase_amount'] * data['month_diff']
     data['amount_month_ratio'] = data['purchase_amount'] / data['month_diff']
 
-    # Christmas : December 25 2017
-    data['Christmas_Day_2017'] = (pd.to_datetime('2017-12-25') - data['purchase_date']).dt.days.apply(
-        lambda x: x if x > 0 and x < 100 else 0)
-    # Mothers Day: May 14 2017
-    data['Mothers_Day_2017'] = (pd.to_datetime('2017-06-04') - data['purchase_date']).dt.days.apply(
-        lambda x: x if x > 0 and x < 100 else 0)
-    # fathers day: August 13 2017
-    data['fathers_day_2017'] = (pd.to_datetime('2017-08-13') - data['purchase_date']).dt.days.apply(
-        lambda x: x if x > 0 and x < 100 else 0)
-    # Childrens day: October 12 2017
-    data['Children_day_2017'] = (pd.to_datetime('2017-10-12') - data['purchase_date']).dt.days.apply(
-        lambda x: x if x > 0 and x < 100 else 0)
-    # Valentine's Day : 12th June, 2017
-    data['Valentine_Day_2017'] = (pd.to_datetime('2017-06-12') - data['purchase_date']).dt.days.apply(
-        lambda x: x if x > 0 and x < 100 else 0)
-    # Black Friday : 24th November 2017
-    data['Black_Friday_2017'] = (pd.to_datetime('2017-11-24') - data['purchase_date']).dt.days.apply(
-        lambda x: x if x > 0 and x < 100 else 0)
-
-    # 2018
-    # Mothers Day: May 13 2018
-    data['Mothers_Day_2018'] = (pd.to_datetime('2018-05-13') - data['purchase_date']).dt.days.apply(
-        lambda x: x if x > 0 and x < 100 else 0)
+    # # Christmas : December 25 2017
+    #     # data['Christmas_Day_2017'] = (pd.to_datetime('2017-12-25') - data['purchase_date']).dt.days.apply(
+    #     #     lambda x: x if x > 0 and x < 100 else 0)
+    #     # # Mothers Day: May 14 2017
+    #     # data['Mothers_Day_2017'] = (pd.to_datetime('2017-06-04') - data['purchase_date']).dt.days.apply(
+    #     #     lambda x: x if x > 0 and x < 100 else 0)
+    #     # # fathers day: August 13 2017
+    #     # data['fathers_day_2017'] = (pd.to_datetime('2017-08-13') - data['purchase_date']).dt.days.apply(
+    #     #     lambda x: x if x > 0 and x < 100 else 0)
+    #     # # Childrens day: October 12 2017
+    #     # data['Children_day_2017'] = (pd.to_datetime('2017-10-12') - data['purchase_date']).dt.days.apply(
+    #     #     lambda x: x if x > 0 and x < 100 else 0)
+    #     # # Valentine's Day : 12th June, 2017
+    #     # data['Valentine_Day_2017'] = (pd.to_datetime('2017-06-12') - data['purchase_date']).dt.days.apply(
+    #     #     lambda x: x if x > 0 and x < 100 else 0)
+    #     # # Black Friday : 24th November 2017
+    #     # data['Black_Friday_2017'] = (pd.to_datetime('2017-11-24') - data['purchase_date']).dt.days.apply(
+    #     #     lambda x: x if x > 0 and x < 100 else 0)
+    #     #
+    #     # # 2018
+    #     # # Mothers Day: May 13 2018
+    #     # data['Mothers_Day_2018'] = (pd.to_datetime('2018-05-13') - data['purchase_date']).dt.days.apply(
+    #     #     lambda x: x if x > 0 and x < 100 else 0)
 
     aggs = {}
     aggs['card_id'] = ['size']
@@ -90,9 +90,9 @@ def deal_transactions(str, data):
         aggs[c] = ['nunique']
     for c in ['category_1', 'category_2', 'IsWeekend', 'authorized_flag']:
         aggs[c] = ['mean']
-    for c in ['Christmas_Day_2017', 'Mothers_Day_2017', 'fathers_day_2017', 'Children_day_2017', 'Valentine_Day_2017',
-              'Black_Friday_2017', 'Mothers_Day_2018']:
-        aggs[c] = ['mean']
+    # for c in ['Christmas_Day_2017', 'Mothers_Day_2017', 'fathers_day_2017', 'Children_day_2017', 'Valentine_Day_2017',
+    #           'Black_Friday_2017', 'Mothers_Day_2018']:
+    #     aggs[c] = ['mean']
     for c in ['year', 'month', 'weekofyear', 'dayofweek', 'hour']:
         aggs[c] = ['nunique', 'mean', 'max', 'min']
     for c in ['installments', 'purchase_amount', 'month_lag', 'month_diff', 'price', 'duration', 'amount_month_ratio']:
@@ -172,12 +172,13 @@ def deal_data(data):
     data['amount_month_ratio_min'] = data['new_hist_amount_month_ratio_min'] + data['hist_amount_month_ratio_min']
     data['amount_month_ratio_max'] = data['new_hist_amount_month_ratio_max'] + data['hist_amount_month_ratio_max']
 
+
     # for f in ['feature_1', 'feature_2', 'feature_3']:
     #     label = data.groupby([f])['outliers'].mean()
     #     data[f] = data[f].map(label)
-    for c in ['feature_1', 'feature_2', 'feature_3']:
-        one_hot_data = pd.get_dummies(data[c], prefix=c)
-        data = pd.concat([data.drop(c, axis=1), one_hot_data], axis=1)
+    # for c in ['feature_1', 'feature_2', 'feature_3']:
+    #     one_hot_data = pd.get_dummies(data[c], prefix=c)
+    #     data = pd.concat([data.drop(c, axis=1), one_hot_data], axis=1)
 
     return data
 
@@ -255,6 +256,10 @@ if __name__ == '__main__':
 
     train = deal_data(train)
     test = deal_data(test)
+    for f in ['feature_1', 'feature_2', 'feature_3']:
+        label = train.groupby([f])['outliers'].mean()
+        train[f] = train[f].map(label)
+        test[f] = test[f].map(label)
 
     train.fillna(0, inplace=True)
     test.fillna(0, inplace=True)
@@ -266,7 +271,7 @@ if __name__ == '__main__':
 
     # Dnn_train, Dnn_test = Dnn(X, Y, test)
 
-    models = [
+    # models = [
     #     # Pipeline([
     #     #     ('poly', PolynomialFeatures()),
     #     #     ('clf', LinearRegression(n_jobs=-1))]),
@@ -276,45 +281,45 @@ if __name__ == '__main__':
     #     #     ('clf', RidgeCV(alphas=[0.01, 0.1, 0.3, 0.5, 1, 5, 10]))]),
     #     # Pipeline([
     #         # ('clf', LassoCV(n_jobs=-1))]),
-        Pipeline([
-            ('clf', XGBRegressor(max_depth=4, learning_rate=0.02, n_estimators=750, objective='reg:linear',  #alpha数据维度高时使用，可以使算法运行加快
-                                 booster='gbtree', subsample=0.8, colsample_bytree=0.8, reg_lambda=1,         #lambda一般不使用，但是可以降低过拟合
-                                 gamma=0.2, random_state=2019, n_jobs=-1))]),
-        Pipeline([
-            ('clf', LGBMRegressor(boosting_type='gbdt', n_estimators=4000, num_leaves=63, max_depth=7,
-                                  min_child_weight=41.9612869171337, min_split_gain=9.820197773625843,
-                                  learning_rate=0.005, objective='regression', subsample=0.9855232997390695,
-                                  subsample_freq=1, colsample_bytree=0.5665320670155495,
-                                  reg_alpha=9.677537745007898, reg_lambda=8.2532317400459,
-                                  metric='rmse', random_state=2019, n_jobs=-1))])
-    ]
-
-    sec_train = np.zeros((X.shape[0], len(models)))
-    sec_test = np.zeros((test.shape[0], len(models)))
-    # titles = ['LR', 'RF', 'Lasso', 'xgb', 'Lgbm']
-    titles = ['xgb', 'Lgbm']
-
-    for i, model in enumerate(models):
-        print(titles[i], end=':  ')
-        model_oof_train, model_oof_test = get_oof(model, X, Y, test, classifier=train['outliers'])
-        sec_train[:, i] = model_oof_train
-        sec_test[:, i] = model_oof_test
-    # sec_train[:, len(models)] = [i for i in Dnn_train]
-    # sec_test[:, len(models)] = [i for i in Dnn_test]
-
-    # poly = PolynomialFeatures(degree=3)
-    # sec_train = poly.fit_transform(sec_train)
-    # sec_test = poly.fit_transform(sec_test)
-    final_model = LinearRegression()
-    final_model.fit(sec_train, Y)
-    predictions = final_model.predict(sec_test)
-    print(np.sqrt(mean_squared_error(Y, final_model.predict(sec_train))))
-
-    if np.sqrt(mean_squared_error(Y, final_model.predict(sec_train))) < 3.66:
-        filename = 'submission_{}_{}.csv'.format('stacking', datetime.now().strftime('%Y-%m-%d-%H-%M'))
-        submission = pd.DataFrame({'card_id': test_id,
-                                   'target': predictions})
-        submission.to_csv('submissions/{}'.format(filename), index=False)
+    #     Pipeline([
+    #         ('clf', XGBRegressor(max_depth=4, learning_rate=0.02, n_estimators=750, objective='reg:linear',  #alpha数据维度高时使用，可以使算法运行加快
+    #                              booster='gbtree', subsample=0.8, colsample_bytree=0.8, reg_lambda=1,         #lambda一般不使用，但是可以降低过拟合
+    #                              gamma=0.2, random_state=2019, n_jobs=-1))]),
+    #     Pipeline([
+    #         ('clf', LGBMRegressor(boosting_type='gbdt', n_estimators=4000, num_leaves=63, max_depth=7,
+    #                               min_child_weight=41.9612869171337, min_split_gain=9.820197773625843,
+    #                               learning_rate=0.005, objective='regression', subsample=0.9855232997390695,
+    #                               subsample_freq=1, colsample_bytree=0.5665320670155495,
+    #                               reg_alpha=9.677537745007898, reg_lambda=8.2532317400459,
+    #                               metric='rmse', random_state=2019, n_jobs=-1))])
+    # ]
+    #
+    # sec_train = np.zeros((X.shape[0], len(models)))
+    # sec_test = np.zeros((test.shape[0], len(models)))
+    # # titles = ['LR', 'RF', 'Lasso', 'xgb', 'Lgbm']
+    # titles = ['xgb', 'Lgbm']
+    #
+    # for i, model in enumerate(models):
+    #     print(titles[i], end=':  ')
+    #     model_oof_train, model_oof_test = get_oof(model, X, Y, test, classifier=train['outliers'])
+    #     sec_train[:, i] = model_oof_train
+    #     sec_test[:, i] = model_oof_test
+    # # sec_train[:, len(models)] = [i for i in Dnn_train]
+    # # sec_test[:, len(models)] = [i for i in Dnn_test]
+    #
+    # # poly = PolynomialFeatures(degree=3)
+    # # sec_train = poly.fit_transform(sec_train)
+    # # sec_test = poly.fit_transform(sec_test)
+    # final_model = LinearRegression()
+    # final_model.fit(sec_train, Y)
+    # predictions = final_model.predict(sec_test)
+    # print(np.sqrt(mean_squared_error(Y, final_model.predict(sec_train))))
+    #
+    # if np.sqrt(mean_squared_error(Y, final_model.predict(sec_train))) < 3.66:
+    #     filename = 'submission_{}_{}.csv'.format('stacking', datetime.now().strftime('%Y-%m-%d-%H-%M'))
+    #     submission = pd.DataFrame({'card_id': test_id,
+    #                                'target': predictions})
+    #     submission.to_csv('submissions/{}'.format(filename), index=False)
 
 
 
@@ -381,46 +386,47 @@ if __name__ == '__main__':
 
 
 
-    # n_splits = 12
-    # skfolds = StratifiedKFold(n_splits=n_splits, shuffle=False, random_state=11)
-    # oof = np.zeros(len(X))
-    # predictions = np.zeros(len(test))
-    # feature_importance = pd.DataFrame()
-    # for fold_, (trn_idx, val_idx) in enumerate(skfolds.split(X, train['outliers'])):
-    #     print('fold%{}'.format(fold_))
-    #     x_train, y_train = X.iloc[trn_idx], Y.iloc[trn_idx]
-    #     x_valid, y_valid = X.iloc[val_idx], Y.iloc[val_idx]
-    #
-    #     model = LGBMRegressor(boosting_type='gbdt',
-    #                           n_estimators=10000,
-    #                           num_leaves=63,
-    #                           max_depth=7,
-    #                           min_child_weight=41.9612869171337,
-    #                           min_split_gain= 9.820197773625843,
-    #                           learning_rate=0.005,
-    #                           objective='regression',
-    #                           subsample=0.9855232997390695,
-    #                           subsample_freq=1,
-    #                           colsample_bytree=0.5665320670155495,
-    #                           reg_alpha=9.677537745007898,
-    #                           reg_lambda=8.2532317400459,
-    #                           metric='rmse',
-    #                           random_state=200*(fold_+1))
-    #     model.fit(x_train, y_train, early_stopping_rounds=300, eval_set=[(x_train, y_train), (x_valid, y_valid)],
-    #               eval_metric='rmse', verbose=200)
-    #     oof[val_idx] = model.predict(x_valid)
-    #
-    #     fold_importance = pd.DataFrame({'feature': [c for c in X.columns],
-    #                                     'importance': model.feature_importances_})
-    #     feature_importance = pd.concat([feature_importance, fold_importance], axis=0)
-    #     predictions += model.predict(test)
-    # final_feature_importance = feature_importance.groupby('feature').mean()\
-    #                            .sort_values(by='importance', ascending=False)
-    # print(final_feature_importance)
-    # print(np.sqrt(mean_squared_error(Y, oof)))
-    #
-    # if np.sqrt(mean_squared_error(Y, oof)) < 3.66:
-    #     filename = 'submission_{}_{}.csv'.format('LGBM', datetime.now().strftime('%Y-%m-%d-%H-%M'))
-    #     submission = pd.DataFrame({'card_id': test_id,
-    #                                'target': predictions / n_splits})
-    #     submission.to_csv('submissions/{}'.format(filename), index=False)
+    n_splits = 20
+    skfolds = StratifiedKFold(n_splits=n_splits, shuffle=False, random_state=9102)
+    oof = np.zeros(len(X))
+    predictions = np.zeros(len(test))
+    feature_importance = pd.DataFrame()
+    for fold_, (trn_idx, val_idx) in enumerate(skfolds.split(X, train['outliers'])):
+        print('fold%{}'.format(fold_))
+        x_train, y_train = X.iloc[trn_idx], Y.iloc[trn_idx]
+        x_valid, y_valid = X.iloc[val_idx], Y.iloc[val_idx]
+
+        model = LGBMRegressor(boosting_type='gbdt',
+                              n_estimators=10000,
+                              num_leaves=63,
+                              max_depth=7,
+                              min_child_weight=41.9612869171337,
+                              min_split_gain= 9.820197773625843,
+                              learning_rate=0.005,
+                              objective='regression',
+                              subsample=0.9855232997390695,
+                              subsample_freq=1,
+                              colsample_bytree=0.5665320670155495,
+                              reg_alpha=9.677537745007898,
+                              reg_lambda=8.2532317400459,
+                              metric='rmse',
+                              random_state=200*(fold_+1))
+        model.fit(x_train, y_train, early_stopping_rounds=300, eval_set=[(x_train, y_train), (x_valid, y_valid)],
+                  eval_metric='rmse', verbose=200)
+        oof[val_idx] = model.predict(x_valid)
+
+
+        fold_importance = pd.DataFrame({'feature': [c for c in X.columns],
+                                        'importance': model.feature_importances_})
+        feature_importance = pd.concat([feature_importance, fold_importance], axis=0)
+        predictions += model.predict(test)
+    final_feature_importance = feature_importance.groupby('feature').mean()\
+                               .sort_values(by='importance', ascending=False)
+    print(final_feature_importance)
+    print(np.sqrt(mean_squared_error(Y, oof)))
+
+    if np.sqrt(mean_squared_error(Y, oof)) < 3.66:
+        filename = 'submission_{}_{}.csv'.format('LGBM', datetime.now().strftime('%Y-%m-%d-%H-%M'))
+        submission = pd.DataFrame({'card_id': test_id,
+                                   'target': predictions / n_splits})
+        submission.to_csv('submissions/{}'.format(filename), index=False)
